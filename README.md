@@ -85,6 +85,72 @@ WORKDIR /var/www            # Définit le répertoire de travail
 EXPOSE 9000                 # Expose le port PHP-FPM
 ```
 
+## Types d'Installation Symfony
+
+Symfony propose deux types d'installation principaux :
+
+### 1. symfony/website-skeleton (Installation Complète)
+
+```bash
+composer create-project symfony/website-skeleton my-project
+```
+
+Cette installation est celle utilisée dans le dossier `app/`. C'est une version complète qui inclut :
+- Tous les composants essentiels de Symfony
+- Doctrine ORM pour la gestion de base de données
+- Twig pour les templates
+- Security bundle pour la sécurité
+- Forms et Validator pour la gestion des formulaires
+- Mailer pour l'envoi d'emails
+- Profiler et Debug bundle pour le développement
+- Tests unitaires et fonctionnels
+- Asset management
+- Internationalisation
+
+Idéal pour :
+- Applications web complètes
+- Sites avec backend administratif
+- Projets nécessitant de nombreuses fonctionnalités
+- Applications complexes avec beaucoup de fonctionnalités
+
+### 2. symfony/skeleton (Installation Minimale)
+
+```bash
+composer create-project symfony/skeleton my-project
+```
+
+Cette installation est celle utilisée dans le dossier `app-skeleton/`. C'est une version minimaliste qui inclut uniquement :
+- Le framework de base Symfony
+- Le système de routage
+- Le conteneur de services
+- Le composant HTTP Foundation
+- Flex pour la gestion des recettes
+
+Idéal pour :
+- Microservices
+- APIs REST
+- Applications légères
+- Projets où vous voulez ajouter uniquement les composants nécessaires
+- Applications personnalisées avec des besoins spécifiques
+
+### Principales différences
+
+1. **Taille du projet** :
+   - website-skeleton : ~100MB (avec vendor)
+   - skeleton : ~30MB (avec vendor)
+
+2. **Nombre de dépendances** :
+   - website-skeleton : ~100 packages
+   - skeleton : ~30 packages
+
+3. **Configuration** :
+   - website-skeleton : Configuration complète pour tous les composants
+   - skeleton : Configuration minimale, à enrichir selon les besoins
+
+4. **Performance** :
+   - website-skeleton : Plus lourd au démarrage
+   - skeleton : Démarrage plus rapide, empreinte mémoire plus légère
+
 ## Utilisation
 
 1. Assurez-vous que Docker est installé sur votre système

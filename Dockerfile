@@ -10,16 +10,25 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    default-mysql-client \
     zip
+
+# Installation des dépendances MySQL
+RUN apt-get install -y default-mysql-client default-libmysqlclient-dev \
+    && docker-php-ext-configure mysqli \
+    && docker-php-ext-install mysqli
 
 # Installation et configuration des extensions PHP nécessaires pour Symfony
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql \
         intl \
         zip \
         gd \
         opcache
+
+# Installation de l'extension PDO MySQL
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql \
+    && docker-php-ext-install pdo pdo_mysql
 
 # Installation de Composer
 RUN curl -sS https://getcomposer.org/installer | php \

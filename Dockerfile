@@ -30,12 +30,21 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql \
     && docker-php-ext-install pdo pdo_mysql
 
+# Optimisation des performances PHP
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+# Configuration PHP optimisée
+RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "max_execution_time=30" >> /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "realpath_cache_size=4096K" >> /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "realpath_cache_ttl=600" >> /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Installation de Composer
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 
 # Configuration PHP pour le développement
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY docker/php/php.ini /usr/local/etc/php/php.ini
 
 # Configurer les permissions
 RUN usermod -u 1000 www-data

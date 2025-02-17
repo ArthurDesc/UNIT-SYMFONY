@@ -1,53 +1,12 @@
-# Instructions pour l'IA - Projet Symfony
+## Structure du projet
 
-## Contexte
-Ce projet consiste à configurer un environnement Symfony en utilisant Docker et Docker Compose, puis à installer et configurer une application Symfony. Voici les étapes détaillées à suivre :
+- `app/` : Contient le code Symfony.
+- `templates/` : Contient les fichiers Twig.
+- `public/` : Contient les fichiers statiques.
+- `src/` : Contient le code Symfony.
+- `vendor/` : Contient les dépendances.
+- `var/` : Contient les fichiers de logs et de cache.
 
-## Étape 1 : Préparer l'environnement
-
-### 1. Installer Docker et Docker Compose
-- **Commandes pour vérifier les installations :**
-  - `docker --version` pour vérifier Docker.
-  - `docker-compose --version` pour vérifier Docker Compose.
-
-### 2. Installer Composer
-- **Commande pour vérifier l'installation :**
-  - `composer --version`
-
-## Étape 2 : Créer un dossier de projet
-- Créer un répertoire nommé "UNIT_SYMFONY" pour le projet Symfony.
-
-## Étape 3 : Préparer le fichier Docker Compose
-
-### 1. Créer un fichier `docker-compose.yml`
-- Créer ce fichier à la racine du projet avec le contenu fourni.
-
-### 2. Créer un fichier de configuration Nginx
-- Créer un dossier `nginx` et un fichier `default.conf` avec le contenu fourni.
-
-### 3. Créer un fichier Dockerfile
-- Créer un fichier `Dockerfile` avec le contenu fourni.
-
-## Étape 4 : Installer Symfony
-
-### 1. Installer Symfony
-- Utiliser la commande : `composer create-project symfony/website-skeleton app`
-
-### 2. Explorer une autre forme d'installation
-- Utiliser la commande : `composer create-project symfony/skeleton app`
-- Expliquer les différences entre les deux installations.
-
-## Étape 5 : Configurer la base de données
-
-### 1. Modifier le fichier `.env`
-- Configurer la connexion à la base de données MySQL.
-
-### 2. Créer le schéma de la base de données
-- Entrer dans le conteneur avec : `docker exec -it symfony_app bash`
-- Exécuter les commandes nécessaires pour créer le schéma.
-
-## Étape 6 : Tester l'application
-- Accéder à l'application sur `http://localhost:8080`.
 
 ## Objectifs supplémentaires
 - Créer des captures d'écran pour illustrer un `readme.md`.

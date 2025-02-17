@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <h1 style="text-align: center;">Bienvenue</h1>
+    
+    {% if app.user %}
+        <p style="text-align: center;">Connecté en tant que : {{ app.user.email }}</p>
+        <p style="text-align: center;">Rôles : {{ app.user.roles|json_encode }}</p>
+        <a href="{{ path('app_logout') }}" style="display: block; text-align: center; margin-top: 20px; color: #007bff; text-decoration: none;">Se déconnecter</a>
+    {% endif %}
+</div>
+{% endblock %} 

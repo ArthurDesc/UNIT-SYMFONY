@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <h1 style="text-align: center; margin-bottom: 30px;">Inscription</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+
+        <button type="submit" style="width: 100%;">S'inscrire</button>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="{{ path('app_login') }}" style="color: #007bff; text-decoration: none;">Déjà un compte ? Se connecter</a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

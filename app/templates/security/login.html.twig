@@ -19,6 +19,12 @@
         {% endif %}
     {% endif %}
 
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <form action="{{ path('app_login') }}" method="post">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         
@@ -33,6 +39,10 @@
         </div>
 
         <button type="submit" style="width: 100%;">Se connecter</button>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="{{ path('app_register') }}" style="color: #007bff; text-decoration: none;">Pas encore de compte ? S'inscrire</a>
+        </div>
     </form>
 </div>
 {% endblock %} 

@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   app:
     image: php:8.2-fpm
@@ -62,6 +64,18 @@ services:
       MYSQL_ROOT_PASSWORD: root
     depends_on:
       - database
+    networks:
+      - symfony_network
+
+  node:
+    image: node:latest
+    container_name: symfony_node
+    working_dir: /var/www/html
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "8083:8083"
+    command: bash -c "npm install && npm run watch"
     networks:
       - symfony_network
 

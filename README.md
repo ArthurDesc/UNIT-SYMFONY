@@ -1,162 +1,126 @@
 # Configuration Docker pour Symfony
 
-Ce projet utilise Docker pour créer un environnement de développement Symfony. Voici les explications détaillées des différents fichiers de configuration.
+Ce projet utilise Docker pour créer un environnement de développement Symfony. Voici les explications détaillées des différents services et configurations.
 
-## docker-compose.yml
+## Structure des Services Docker
 
-Le fichier `docker-compose.yml` définit l'infrastructure complète de l'application :
+Le fichier `docker-compose.yml` définit les services suivants :
 
+### Service PHP-FPM (symfony_app)
 ```yaml
-services:
-  nginx:                         # Service Nginx qui sert de serveur web
-    image: nginx:alpine         # Utilise l'image officielle Nginx version Alpine (légère)
-    ports:
-      - "8080:80"              # Expose le port 8080 sur l'hôte, mappé au port 80 du conteneur
-    volumes:                    # Montage des volumes
-      - ./:/var/www            # Monte le code source dans le conteneur
-      - ./nginx/default.conf   # Monte la configuration Nginx
-```
-
-Le service PHP :
-```yaml
-  php:                          # Service PHP-FPM pour exécuter le code PHP
-    build: .                    # Construit l'image à partir du Dockerfile local
+app:
+    image: php:8.2-fpm
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - ./:/var/www            # Monte le code source dans le conteneur
+      - ./app:/var/www/html
 ```
+Service principal qui exécute l'application PHP avec PHP-FPM 8.2.
 
-Le service MySQL :
+### Service Nginx (symfony_webserver)
 ```yaml
-  database:                     # Service de base de données MySQL
-    image: mysql:8.0           # Utilise MySQL 8.0
-    environment:               # Variables d'environnement pour la configuration
-      MYSQL_DATABASE: symfony_db
+webserver:
+    image: nginx:stable
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./nginx:/etc/nginx/conf.d
+```
+Serveur web qui gère les requêtes HTTP, accessible sur le port 8080.
+
+### Service MySQL (symfony_db)
+```yaml
+database:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: symfony
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: symfony
       MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    ports:
+      - "3306:3306"
 ```
+Base de données MySQL 8.0 pour stocker les données de l'application.
 
-## nginx/default.conf
+### Outils d'Administration de Base de Données
 
-La configuration Nginx gère les requêtes HTTP :
-
-```nginx
-server {
-    listen 80;                # Écoute sur le port 80
-    root /var/www/public;     # Dossier racine de l'application Symfony
-
-    location / {
-        try_files $uri /index.php$is_args$args;  # Redirige vers index.php si le fichier n'existe pas
-    }
-
-    location ~ ^/index\.php(/|$) {
-        fastcgi_pass php:9000;  # Transmet les requêtes PHP au service PHP-FPM
-        # Configuration FastCGI pour Symfony
-    }
-}
+#### Adminer (symfony_adminer)
+```yaml
+adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
 ```
+Interface d'administration de base de données légère, accessible sur http://localhost:8081
 
-## Dockerfile
-
-Le Dockerfile configure l'environnement PHP :
-
-```dockerfile
-FROM php:8.2-fpm-alpine      # Image de base PHP 8.2 avec FPM sur Alpine Linux
-
-# Installation des dépendances système nécessaires
-RUN apk add --no-cache \     # Installe les paquets système requis
-    git \
-    zip \
-    unzip \
-    libzip-dev \
-    icu-dev
-
-# Installation des extensions PHP requises
-RUN docker-php-ext-configure intl && \
-    docker-php-ext-install \
-    pdo_mysql \              # Support MySQL
-    zip \                    # Support ZIP
-    intl                     # Support Internationalisation
-
-# Installation de Composer (gestionnaire de dépendances PHP)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-WORKDIR /var/www            # Définit le répertoire de travail
-EXPOSE 9000                 # Expose le port PHP-FPM
+#### phpMyAdmin (symfony_phpmyadmin)
+```yaml
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8082:80"
 ```
+Interface alternative d'administration MySQL, accessible sur http://localhost:8082
 
-## Types d'Installation Symfony
-
-Symfony propose deux types d'installation principaux :
-
-### 1. symfony/website-skeleton (Installation Complète)
-
-```bash
-composer create-project symfony/website-skeleton my-project
+### Service Node.js (symfony_node)
+```yaml
+node:
+    image: node:latest
+    working_dir: /var/www/html
+    ports:
+      - "8083:8083"
+    command: bash -c "npm install && npm run watch"
 ```
+Service pour la compilation des assets et le rechargement automatique en développement.
 
-Cette installation est celle utilisée dans le dossier `app/`. C'est une version complète qui inclut :
-- Tous les composants essentiels de Symfony
-- Doctrine ORM pour la gestion de base de données
-- Twig pour les templates
-- Security bundle pour la sécurité
-- Forms et Validator pour la gestion des formulaires
-- Mailer pour l'envoi d'emails
-- Profiler et Debug bundle pour le développement
-- Tests unitaires et fonctionnels
-- Asset management
-- Internationalisation
+## Configuration du Projet
 
-Idéal pour :
-- Applications web complètes
-- Sites avec backend administratif
-- Projets nécessitant de nombreuses fonctionnalités
-- Applications complexes avec beaucoup de fonctionnalités
+### Dockerfile
+Le Dockerfile configure l'environnement PHP avec :
+- PHP 8.2-FPM
+- Extensions PHP nécessaires (pdo_mysql, intl, etc.)
+- Optimisations de performance (OPcache)
+- Configuration PHP optimisée pour le développement
 
-### 2. symfony/skeleton (Installation Minimale)
+### Webpack Encore
+Le projet utilise Webpack Encore pour la gestion des assets :
+- Compilation automatique des fichiers CSS/JS
+- Rechargement automatique en développement
+- Support de Stimulus pour les composants JavaScript
 
-```bash
-composer create-project symfony/skeleton my-project
-```
+## Captures d'écran du Projet
 
-Cette installation est celle utilisée dans le dossier `app-skeleton/`. C'est une version minimaliste qui inclut uniquement :
-- Le framework de base Symfony
-- Le système de routage
-- Le conteneur de services
-- Le composant HTTP Foundation
-- Flex pour la gestion des recettes
+### Interface de Connexion
+![Interface de connexion](images/image.png)
+L'interface de connexion permet aux utilisateurs de s'authentifier avec leur email et mot de passe. Elle propose également un lien pour créer un nouveau compte.
 
-Idéal pour :
-- Microservices
-- APIs REST
-- Applications légères
-- Projets où vous voulez ajouter uniquement les composants nécessaires
-- Applications personnalisées avec des besoins spécifiques
-
-### Principales différences
-
-1. **Taille du projet** :
-   - website-skeleton : ~100MB (avec vendor)
-   - skeleton : ~30MB (avec vendor)
-
-2. **Nombre de dépendances** :
-   - website-skeleton : ~100 packages
-   - skeleton : ~30 packages
-
-3. **Configuration** :
-   - website-skeleton : Configuration complète pour tous les composants
-   - skeleton : Configuration minimale, à enrichir selon les besoins
-
-4. **Performance** :
-   - website-skeleton : Plus lourd au démarrage
-   - skeleton : Démarrage plus rapide, empreinte mémoire plus légère
+### Interface d'Inscription
+![Interface d'inscription](images/copy.png)
+Le formulaire d'inscription permet aux nouveaux utilisateurs de créer un compte en fournissant leur email et en choisissant un mot de passe.
 
 ## Utilisation
 
-1. Assurez-vous que Docker est installé sur votre système
-2. Clonez ce dépôt
-3. Lancez l'environnement avec :
-   ```bash
-   docker-compose up -d
-   ```
-4. Accédez à l'application via `http://localhost:8080` 
+1. Clonez le projet
+2. Lancez l'environnement :
+```bash
+docker-compose up -d
+```
+3. Installez les dépendances :
+```bash
+docker exec -it symfony_app composer install
+docker exec -it symfony_node npm install
+```
+4. Accédez à l'application :
+   - Application : http://localhost:8080
+   - Adminer : http://localhost:8081
+   - phpMyAdmin : http://localhost:8082
+
+## Développement
+
+Pour le développement, le projet inclut :
+- Rechargement automatique des assets (via Webpack Encore)
+- Configuration de développement PHP optimisée
+- Outils de débogage et d'administration de base de données
+- Logs détaillés pour le débogage

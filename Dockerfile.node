@@ -1,0 +1,26 @@
+FROM node:16-alpine
+
+# Installer les dépendances nécessaires
+RUN apk add --no-cache shadow
+
+# Créer le répertoire de travail
+WORKDIR /var/www/html
+
+# Créer un utilisateur non-root
+RUN addgroup -S nodeuser && adduser -S nodeuser -G nodeuser
+
+# S'assurer que nodeuser possède les permissions nécessaires
+RUN mkdir -p /var/www/html/node_modules && \
+    chown -R nodeuser:nodeuser /var/www/html
+
+# Définir le répertoire npm global pour éviter les problèmes de permissions
+ENV NPM_CONFIG_PREFIX=/home/nodeuser/.npm-global
+ENV PATH=$PATH:/home/nodeuser/.npm-global/bin
+RUN mkdir -p /home/nodeuser/.npm-global && \
+    chown -R nodeuser:nodeuser /home/nodeuser
+
+# Utiliser l'utilisateur non-root
+USER nodeuser
+
+# Commande par défaut
+CMD ["sh", "-c", "npm install --legacy-peer-deps && npm run watch"] 

@@ -68,16 +68,21 @@ services:
       - symfony_network
 
   node:
-    image: node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.node
     container_name: symfony_node
     working_dir: /var/www/html
     volumes:
       - ./app:/var/www/html
+      - node_modules:/var/www/html/node_modules:delegated
     ports:
       - "8083:8083"
-    command: bash -c "npm install && npm run watch"
     networks:
       - symfony_network
+    environment:
+      - NODE_ENV=development
+      - NPM_CONFIG_CACHE=/home/nodeuser/.npm-cache
 
 networks:
   symfony_network:
@@ -85,3 +90,4 @@ networks:
 
 volumes:
   db_data: # Déclaration du volume nommé pour la persistance des données
+  node_modules:

@@ -47,7 +47,7 @@ services:
     container_name: symfony_adminer
     restart: always
     ports:
-      - "8081:8080" # Adminer sera accessible sur http://localhost:8081
+      - "8081:8080"
     depends_on:
       - database
     networks:
@@ -58,7 +58,7 @@ services:
     container_name: symfony_phpmyadmin
     restart: always
     ports:
-      - "8082:80" # phpMyAdmin sera accessible sur http://localhost:8082
+      - "8082:80"
     environment:
       PMA_HOST: symfony_db
       MYSQL_ROOT_PASSWORD: root
@@ -67,21 +67,9 @@ services:
     networks:
       - symfony_network
 
-  node:
-    image: node:latest
-    container_name: symfony_node
-    working_dir: /var/www/html
-    volumes:
-      - ./app:/var/www/html
-    ports:
-      - "8083:8083"
-    command: bash -c "npm install && npm run watch"
-    networks:
-      - symfony_network
-
 networks:
   symfony_network:
     driver: bridge
 
 volumes:
-  db_data: # Déclaration du volume nommé pour la persistance des données
+  db_data:

@@ -30,13 +30,13 @@ COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY docker/php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Configuration PHP optimisée
-RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/memory-limit.ini \
-    && echo "max_execution_time=30" >> /usr/local/etc/php/conf.d/memory-limit.ini \
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "max_execution_time=60" >> /usr/local/etc/php/conf.d/memory-limit.ini \
     && echo "realpath_cache_size=4096K" >> /usr/local/etc/php/conf.d/memory-limit.ini \
     && echo "realpath_cache_ttl=600" >> /usr/local/etc/php/conf.d/memory-limit.ini \
     && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/memory-limit.ini \
-    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/memory-limit.ini \
-    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "opcache.memory_consumption=512" >> /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "opcache.max_accelerated_files=40000" >> /usr/local/etc/php/conf.d/memory-limit.ini \
     && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/memory-limit.ini
 
 # Installation de Composer

@@ -3,58 +3,60 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header">
-            <h1 class="text-center mb-0">Bienvenue sur l'administration</h1>
+<div class="container py-4">
+    <div class="card shadow">
+        <div class="card-header bg-white border-bottom">
+            <h1 class="h3 mb-0 text-center">Bienvenue sur l'administration</h1>
         </div>
         <div class="card-body">
             {% if app.user %}
-                <div class="text-center mb-4">
-                    <p class="mb-2">
-                        <i class="fas fa-user"></i> Connecté en tant que : <strong>{{ app.user.email }}</strong>
-                    </p>
-                    <p>
-                        Rôles : 
-                        {% for role in app.user.roles %}
-                            {% if role != 'ROLE_USER' %}
-                                <span class="badge bg-{{ role == 'ROLE_ADMIN' ? 'danger' : 'info' }}">
-                                    {{ role|replace({'ROLE_': ''}) }}
-                                </span>
-                            {% endif %}
-                        {% endfor %}
-                    </p>
+                <div class="user-info bg-light p-3 rounded mb-4">
+                    <div class="d-flex align-items-center justify-content-center flex-column">
+                        <p class="mb-2">
+                            <i class="fas fa-user me-2"></i>Connecté en tant que : <strong>{{ app.user.email }}</strong>
+                        </p>
+                        <div>
+                            Rôles : 
+                            {% for role in app.user.roles %}
+                                {% if role != 'ROLE_USER' %}
+                                    <span class="badge {% if role == 'ROLE_ADMIN' %}bg-danger{% else %}bg-info{% endif %} ms-1">
+                                        {{ role|replace({'ROLE_': ''}) }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row justify-content-center">
                     {% if is_granted('ROLE_ADMIN') %}
-                        <div class="col-md-4 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body text-center d-flex flex-column">
+                                    <div class="mb-3">
+                                        <i class="fas fa-users fa-3x text-primary"></i>
+                                    </div>
                                     <h5 class="card-title">Gestion des Utilisateurs</h5>
-                                    <p class="card-text">Gérer les utilisateurs et leurs droits d'accès</p>
-                                    <a href="{{ path('app_user_index') }}" class="btn btn-primary">
-                                        <i class="fas fa-cog"></i> Accéder
+                                    <p class="card-text flex-grow-1">Gérer les utilisateurs et leurs droits d'accès</p>
+                                    <a href="{{ path('app_user_index') }}" class="btn btn-primary mt-auto">
+                                        <i class="fas fa-cog me-2"></i>Accéder
                                     </a>
                                 </div>
                             </div>
                         </div>
                     {% endif %}
-                    
-                    {# Ajoutez d'autres cartes de menu ici en fonction des rôles #}
                 </div>
 
                 <div class="text-center mt-4">
                     <a href="{{ path('app_logout') }}" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                        <i class="fas fa-sign-out-alt me-2"></i>Se déconnecter
                     </a>
                 </div>
             {% else %}
                 <div class="text-center">
-                    <p>Veuillez vous connecter pour accéder à l'administration.</p>
+                    <p class="mb-3">Veuillez vous connecter pour accéder à l'administration.</p>
                     <a href="{{ path('app_login') }}" class="btn btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
                     </a>
                 </div>
             {% endif %}
